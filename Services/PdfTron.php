@@ -1,40 +1,35 @@
 <?php
 
-namespace PdfTronBundle\Services;
+namespace PDFTronBundle\Services;
 
 /**
- * Class PdfTron
- * @package PdfTronBundle\Services
+ * Class PDFTron
+ * @package PDFTronBundle\Services
  */
-class PdfTron
+class PDFTron
 {
     /**
      * @var string
      */
-    private $pdfDirectory;
+    private $XODDirectory;
 
     /**
-     * @var string
+     * PDFTron constructor.
      */
-    private $xodDirectory;
-
-    /**
-     * PdfTron constructor.
-     */
-    public function __construct($rootDir) {
-        $this->pdfDirectory = $rootDir . '/../pdf/';
-        $this->xodDirectory = $rootDir . '/../web/xod/';
+    public function __construct($rootDirectory, $XODDirectory = 'web/XOD/')
+    {
+        $this->XODDirectory = $rootDirectory . '/../' . $XODDirectory;
     }
 
     /**
-     * @param string $pdfName
+     * @param string $PDFName
      */
-    public function convert($pdfName = '') {
-        if (!empty($pdfName)) {
+    public function convert($PDFFilePath = '') {
+        if (!empty($PDFFilePAth) && file_exists($PDFFilePath)) {
             PDFNet::Initialize();
-            Convert::ToXod(
-                $this->pdfPath($pdfName),
-                $this->xodPath($pdfName)
+            Convert::ToXOD(
+                $PDFFilePath,
+                $this->XODPath($PDFFilePath)
             );
         }
     }
@@ -42,34 +37,21 @@ class PdfTron
     /**
      * @return string
      */
-    public function getPdfDirectory()
+    public function getXODDirectory()
     {
-        return $this->pdfDirectory;
+        return $this->XODDirectory;
     }
 
     /**
+     * @param $filename
      * @return string
      */
-    public function getXodDirectory()
-    {
-        return $this->xodDirectory;
-    }
+    public function XODPath($filename) {
+        $pathArray = explode('/', $filename);
+        $PDFName = array_pop($pathArray);
+        $filename = explode('.', $PDFName);
+        array_pop($filename);
 
-    public function pdfPath($filename) {
-        return $this->getPdfDirectory() . '' . $filename . '.pdf';
-    }
-
-    public function pdfExists($filename) {
-        $xodPath = $this->pdfPath($filename);
-        return file_exists($xodPath);
-    }
-
-    public function xodPath($filename) {
-        return $this->getXodDirectory() . '' . $filename . '.xod';
-    }
-
-    public function xodExists($filename) {
-        $xodPath = $this->xodPath($filename);
-        return file_exists($xodPath);
+        return $this->getXODDirectory() . '' . $filename . '.xod';
     }
 }

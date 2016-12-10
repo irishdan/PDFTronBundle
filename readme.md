@@ -1,4 +1,6 @@
-# PDFTron integration
+# PDFTron demo integration
+This a bundle to demonstrate how to get [PDFTron](https://www.pdftron.com/) set up for symfony projects 
+using the [PDFNet SDK](http://www.pdftron.com/pdfnet/index.html) and the [PDFTron WebViewer](http://www.pdftron.com/webviewer/index.html)
 
 ## Installation
  - To run the bash installation script run:
