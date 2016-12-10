@@ -1,0 +1,4 @@
+services:
+  pdftron.converter:
+      class: PdfTronBundle\Services\PdfTron
+      arguments: [ '%kernel.root_dir%' ]
