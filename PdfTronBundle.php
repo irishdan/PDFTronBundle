@@ -1,9 +1,9 @@
 <?php
 
-namespace PdfTronBundle;
+namespace PDFTronBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class PdfTronBundle extends Bundle
+class PDFTronBundle extends Bundle
 {
 }

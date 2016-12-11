@@ -1,4 +1,9 @@
 services:
   pdftron.converter:
-      class: PdfTronBundle\Services\PDFTron
-      arguments: [ '%kernel.root_dir%', '%pdftron.xod_directory%' ]
+      class: PDFTronBundle\Services\PDFTron
+
+  pdftron.convert_all_command:
+      class: PDFTronBundle\Command\ConvertPDFCommand
+      arguments: [ '@pdftron.converter', '%kernel.root_dir%', '%pdftron.pdf_directory%', '%pdftron.xod_directory%' ]
+      tags:
+          - { name: console.command }

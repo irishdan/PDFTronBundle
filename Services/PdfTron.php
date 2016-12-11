@@ -9,49 +9,14 @@ namespace PDFTronBundle\Services;
 class PDFTron
 {
     /**
-     * @var string
+     * @param string $PDFFilePath
+     * @param string $XODFilePath
      */
-    private $XODDirectory;
-
-    /**
-     * PDFTron constructor.
-     */
-    public function __construct($rootDirectory, $XODDirectory = 'web/XOD/')
-    {
-        $this->XODDirectory = $rootDirectory . '/../' . $XODDirectory;
-    }
-
-    /**
-     * @param string $PDFName
-     */
-    public function convert($PDFFilePath = '') {
+    public function convertPDFToXOD($PDFFilePath = '', $XODFilePath = '') {
         if (!empty($PDFFilePAth) && file_exists($PDFFilePath)) {
             PDFNet::Initialize();
-            Convert::ToXOD(
-                $PDFFilePath,
-                $this->XODPath($PDFFilePath)
-            );
+            Convert::ToXOD($PDFFilePath, $XODFilePath);
         }
     }
 
-    /**
-     * @return string
-     */
-    public function getXODDirectory()
-    {
-        return $this->XODDirectory;
-    }
-
-    /**
-     * @param $filename
-     * @return string
-     */
-    public function XODPath($filename) {
-        $pathArray = explode('/', $filename);
-        $PDFName = array_pop($pathArray);
-        $filename = explode('.', $PDFName);
-        array_pop($filename);
-
-        return $this->getXODDirectory() . '' . $filename . '.xod';
-    }
 }
