@@ -74,7 +74,7 @@ class ConvertPDFCommand extends ContainerAwareCommand
         foreach ($files as $PDFFile => $XODFile) {
             // Get the time taken to convert.
             $time_start = microtime(true);
-            // $this->PDFTron->convertPDFToXOD($PDFFile, $XODFile);
+            $this->PDFTron->convertPDFToXOD($PDFFile, $XODFile);
             $time_end = microtime(true);
 
             // Conversion time
