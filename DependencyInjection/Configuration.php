@@ -27,6 +27,9 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('xod_directory')
                     ->defaultValue('web/xod')
                 ->end()
+                ->scalarNode('image_directory')
+                    ->defaultValue('web/image')
+                ->end()
             ->end()
         ;
 

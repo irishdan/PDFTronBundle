@@ -2,8 +2,12 @@ services:
   pdftron.converter:
       class: PDFTronBundle\Services\PDFTron
 
+  pdftron.file_system:
+      class: PDFTronBundle\Services\PDFFileSystem
+      arguments: [ '%kernel.root_dir%', '%pdf_tron.xod_directory%', '%pdf_tron.xod_directory%', '%pdf_tron.image_directory%' ]
+
   pdftron.convert_all_command:
       class: PDFTronBundle\Command\ConvertPDFCommand
-      arguments: [ '@pdftron.converter', '%kernel.root_dir%', '%pdf_tron.xod_directory%', '%pdf_tron.xod_directory%' ]
+      arguments: [ '@pdftron.converter', '@pdftron.file_system' ]
       tags:
           - { name: console.command }

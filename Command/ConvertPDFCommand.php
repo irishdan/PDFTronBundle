@@ -3,6 +3,7 @@
 namespace PDFTronBundle\Command;
 
 
+use PDFTronBundle\Services\PDFFileSystem;
 use PDFTronBundle\Services\PDFTron;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -25,25 +26,17 @@ class ConvertPDFCommand extends ContainerAwareCommand
     /**
      * @var
      */
-    private $PDFDirectory;
-
-    /**
-     * @var
-     */
-    private $XODDirectory;
+    private $PDFFileSystem;
 
     /**
      * ConvertPDFCommand constructor.
      * @param PDFTron $PDFTron
-     * @param $rootDirectory
-     * @param $PDFDirectory
-     * @param $XODDirectory
+     * @param PDFFileSystem $PDFFileSystem
      */
-    public function __construct(PDFTron $PDFTron, $rootDirectory, $PDFDirectory, $XODDirectory)
+    public function __construct(PDFTron $PDFTron, PDFFileSystem $PDFFileSystem)
     {
         $this->PDFTron = $PDFTron;
-        $this->PDFDirectory = $rootDirectory . '/../' . $PDFDirectory;
-        $this->XODDirectory = $rootDirectory . '/../' . $XODDirectory;
+        $this->PDFFileSystem = $PDFFileSystem;
 
         parent::__construct();
     }
@@ -54,9 +47,9 @@ class ConvertPDFCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('pdf_tron:convert_pdf')
+            ->setName('pdf_tron:pdf_to_xod')
             ->addArgument('pdf_name', InputArgument::OPTIONAL)
-            ->setDescription('Convert the input file to XOD format')
+            ->setDescription('Convert a PDF file to XOD format')
             ->setHelp('The command converts an input PDF file into the XOD format.')
         ;
     }
@@ -72,47 +65,15 @@ class ConvertPDFCommand extends ContainerAwareCommand
         $files = $this->getPDFFilesArray($input);
 
         foreach ($files as $PDFFile => $XODFile) {
-            // Get the time taken to convert.
-            $time_start = microtime(true);
             $this->PDFTron->convertPDFToXOD($PDFFile, $XODFile);
-            $time_end = microtime(true);
 
-            // Conversion time
-            $conversionTime = $time_end - $time_start;
-            $conversionTime = round($conversionTime, 3) . 's';
-
-            // File sizes
-            $originalSize = $this->fileSize($PDFFile);
-            $convertedSize = $this->fileSize($XODFile);
-            $fileSizes = $this->formatBytes($originalSize) . '/' . $this->formatBytes($convertedSize);
+            // File sizes before and after.
+            $originalSize = $this->PDFFileSystem->fileSize($PDFFile);
+            $convertedSize = $this->PDFFileSystem->fileSize($XODFile);
 
             // Output the results.
-            $style->text($PDFFile . ' converted to ' . $XODFile . '.xod. Filesizes: ' . $fileSizes . ' in ' . $conversionTime);
+            $style->text($PDFFile . ' converted to ' . $XODFile . ', ' . $originalSize . '/' . $convertedSize);
         }
-
-        $style->text($this->PDFDirectory);
-    }
-
-    /**
-     * @param $filename
-     * @return int
-     */
-    private function fileSize($filename) {
-        $bytes = filesize($filename);
-        return $bytes;
-    }
-
-    /**
-     * @param $size
-     * @param int $precision
-     * @return string
-     */
-    function formatBytes($size, $precision = 2)
-    {
-        $base = log($size, 1024);
-        $suffixes = array('', 'K', 'M', 'G', 'T');
-
-        return round(pow(1024, $base - floor($base)), $precision) . '' . $suffixes[floor($base)];
     }
 
     /**
@@ -121,56 +82,8 @@ class ConvertPDFCommand extends ContainerAwareCommand
      */
     function getPDFFilesArray(InputInterface $input)
     {
-        $files = [];
-        $filesMappings = [];
         $filename = $input->getArgument('pdf_name');
-        if (!empty($filename)) {
-            if (!file_exists($filename)) {
-                $filename = $this->getPDFDirectory() . $filename;
-            }
 
-            if (file_exists($filename)) {
-                $files[] = $filename;
-            }
-        }
-        else {
-            $PDFDirectory = $this->getPDFDirectory();
-            $files = array_diff(scandir($PDFDirectory), array('.', '..'));
-        }
-
-        // Out non-pdf files and generate the
-        foreach ($files as $key => $path) {
-            $fileInfo = pathinfo($path);
-            if (!empty($fileInfo['extension'] && strtolower($fileInfo['extension']) == 'pdf')) {
-                $filesMappings[$path] = $this->getXODPath($fileInfo['filename']);
-            }
-        }
-
-        return $filesMappings;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPDFDirectory()
-    {
-        return $this->PDFDirectory;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getXODDirectory()
-    {
-        return $this->XODDirectory;
-    }
-
-    /**
-     * @param $path
-     * @return string
-     */
-    public function getXODPath($path)
-    {
-        return $this->getXODDirectory() . $path . '.xod';
+        return $this->PDFFileSystem->getPDFFilesArray($filename);
     }
 }
