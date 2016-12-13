@@ -42,7 +42,7 @@ class ConvertPDFCommand extends ContainerAwareCommand
     }
 
     /**
-     *
+     * Define the command.
      */
     protected function configure()
     {
@@ -55,6 +55,7 @@ class ConvertPDFCommand extends ContainerAwareCommand
     }
 
     /**
+     * Execute the command
      * @param InputInterface $input
      * @param OutputInterface $output
      */

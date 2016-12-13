@@ -21,18 +21,19 @@ class PDFTron
     public function __construct($optionSets = [])
     {
         $this->optionSets = $optionSets;
-
         \PDFNet::Initialize();
     }
 
     /**
+     * Convert a PDF file to a webviewer XOD file.
+     *
      * @param string $PDFFilePath
      * @param string $XODFilePath
      * @param string $optionsSetName
      */
-    public function convertPDFToXOD($PDFFilePath = '', $XODFilePath = '', $optionsSetName = '') {
+    public function convertPDFToXOD($PDFFilePath = '', $XODFilePath = '', $optionsSetName = '')
+    {
         if (!empty($PDFFilePAth) && file_exists($PDFFilePath)) {
-
             if (!empty($optionsSetName) && !empty($this->optionSets[$optionsSetName])) {
                 $outputOptions = $this->createXODOutputOptions($this->optionSets[$optionsSetName]);
                 \Convert::ToXOD($PDFFilePath, $XODFilePath, $outputOptions);
@@ -44,10 +45,32 @@ class PDFTron
     }
 
     /**
+     * Create an image from a page of a PDF.
+     *
+     * @param string $PDFFilePath
+     * @param string $outputPath
+     * @param int $dpi
+     * @param int $page
+     * @param string $imageType
+     */
+    public function drawImage($PDFFilePath = '', $outputPath = '', $dpi = 92, $page = 1, $imageType = 'JPEG')
+    {
+        $draw = new \PDFDraw();
+        $draw->SetDPI($dpi);
+        $doc = new \PDFDoc($PDFFilePath);
+        $doc->InitSecurityHandler();
+        $pg = $doc->GetPage($page);
+        $draw->Export($pg, $outputPath, $imageType);
+        $doc->Close();
+    }
+
+    /**
+     * Creates an XODOutputOptions object to customise XOD output.
+     *
      * @param array $options
      * @return \XODOutputOptions
      */
-    public function createXODOutputOptions($options = [])
+    protected function createXODOutputOptions($options = [])
     {
         $xodOptions = new \XODOutputOptions();
         foreach ($options as $optionKey => $optionValue) {
