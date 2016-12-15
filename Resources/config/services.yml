@@ -1,6 +1,13 @@
 services:
-  pdftron.converter:
-      class: PDFTronBundle\Services\PDFTron
+  pdftron.pdf_to_xod:
+      class: PDFTronBundle\Services\PDFToXODConverter
+      arguments: [ '%pdf_tron.options_sets%' ]
+
+  pdftron.thumbnail_generator:
+      class: PDFTronBundle\Services\PDFThumbnailGenerator
+
+  pdftron.joiner:
+      class: PDFTronBundle\Services\PDFJoiner
 
   pdftron.file_system:
       class: PDFTronBundle\Services\PDFFileSystem

@@ -20,6 +20,7 @@ class PDFTronExtension extends Extension
         $container->setParameter('pdf_tron.pdf_directory', $config['pdf_directory']);
         $container->setParameter('pdf_tron.xod_directory', $config['xod_directory']);
         $container->setParameter('pdf_tron.image_directory', $config['image_directory']);
+        $container->setParameter('pdf_tron.options_sets', $config['options_sets']);
     }
 
 }
