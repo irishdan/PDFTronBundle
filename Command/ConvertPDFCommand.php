@@ -2,8 +2,8 @@
 
 namespace PDFTronBundle\Command;
 
-
 use PDFTronBundle\Services\PDFFileSystem;
+use PDFTronBundle\Services\PDFToXODConverter;
 use PDFTronBundle\Services\PDFTron;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -21,7 +21,7 @@ class ConvertPDFCommand extends ContainerAwareCommand
     /**
      * @var PDFTron
      */
-    private $PDFTron;
+    private $PDFToXODConverter;
 
     /**
      * @var
@@ -30,12 +30,12 @@ class ConvertPDFCommand extends ContainerAwareCommand
 
     /**
      * ConvertPDFCommand constructor.
-     * @param PDFTron $PDFTron
+     * @param PDFToXODConverter $PDFToXODConverter
      * @param PDFFileSystem $PDFFileSystem
      */
-    public function __construct(PDFTron $PDFTron, PDFFileSystem $PDFFileSystem)
+    public function __construct(PDFToXODConverter $PDFToXODConverter, PDFFileSystem $PDFFileSystem)
     {
-        $this->PDFTron = $PDFTron;
+        $this->PDFToXODConverter =$PDFToXODConverter;
         $this->PDFFileSystem = $PDFFileSystem;
 
         parent::__construct();
@@ -66,7 +66,7 @@ class ConvertPDFCommand extends ContainerAwareCommand
         $files = $this->getPDFFilesArray($input);
 
         foreach ($files as $PDFFile => $XODFile) {
-            $this->PDFTron->convertPDFToXOD($PDFFile, $XODFile);
+            $this->PDFToXODConverter->convertPDFToXOD($PDFFile, $XODFile);
 
             // File sizes before and after.
             $originalSize = $this->PDFFileSystem->fileSize($PDFFile);

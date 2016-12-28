@@ -30,6 +30,10 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('image_directory')
                     ->defaultValue('web/image')
                 ->end()
+                ->arrayNode('options_sets')
+                    ->prototype('array')
+                    ->end()
+                ->end()
             ->end()
         ;
 
