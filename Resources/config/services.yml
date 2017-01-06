@@ -3,8 +3,11 @@ services:
       class: PDFTronBundle\Services\PDFToXODConverter
       arguments: [ '%pdf_tron.options_sets%' ]
 
+  pdftron.crop:
+      class: PDFTronBundle\Services\PDFCropper
+
   pdftron.thumbnail_generator:
-      class: PDFTronBundle\Services\PDFThumbnailGenerator
+        class: PDFTronBundle\Services\PDFThumbnailGenerator
 
   pdftron.joiner:
       class: PDFTronBundle\Services\PDFJoiner
@@ -16,5 +19,11 @@ services:
   pdftron.convert_all_command:
       class: PDFTronBundle\Command\ConvertPDFCommand
       arguments: [ '@pdftron.pdf_to_xod', '@pdftron.file_system' ]
+      tags:
+          - { name: console.command }
+
+  pdftron.crop_command:
+      class: PDFTronBundle\Command\CropPDFCommand
+      arguments: [ '@pdftron.crop', '@pdftron.file_system' ]
       tags:
           - { name: console.command }

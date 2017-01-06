@@ -15,7 +15,7 @@ abstract class PDFTron
     public function __construct()
     {
         error_reporting(E_ALL & ~E_STRICT);
-        include(__DIR__ . '/../PDFNetWrappers/PDFNetC/Lib/PDFNetPHP.php');
+        require_once(__DIR__ . '/../PDFNetWrappers/PDFNetC/Lib/PDFNetPHP.php');
 
         \PDFNet::Initialize();
     }
