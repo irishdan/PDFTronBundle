@@ -38,10 +38,14 @@ class PDFFileSystem
         $this->imageDirectory = $rootDirectory . '/../' . $imageDirectory;
     }
 
-    function getPDFFilesArray($filename = '')
+    /**
+     * Creates an array of pdf file paths.
+     * @param string $filename
+     * @return array
+     */
+    public function getPDFFilesArray($filename = '')
     {
         $files = [];
-        $filesMappings = [];
         if (!empty($filename)) {
             if (!file_exists($filename)) {
                 $filename = $this->getPDFDirectory() . $filename;
@@ -56,7 +60,19 @@ class PDFFileSystem
             $files = array_diff(scandir($PDFDirectory), array('.', '..'));
         }
 
-        // Out non-pdf files and generate the
+        return $files;
+    }
+
+    /**
+     * Creates an array of pdf file paths as keys with xod file paths as values.
+     * @param string $filename
+     * @return array
+     */
+    function getPDFtoXODFilesArray($filename = '')
+    {
+        $files = $this->getPDFFilesArray($filename);
+
+        // Out non-pdf files and generate the xod path
         foreach ($files as $key => $path) {
             $fileInfo = pathinfo($path);
             if (!empty($fileInfo['extension'] && strtolower($fileInfo['extension']) == 'pdf')) {

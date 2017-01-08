@@ -64,23 +64,17 @@ class CropPDFCommand extends ContainerAwareCommand
     {
         $style = new SymfonyStyle($input, $output);
         // Foreach file get the file name and XOD file path.
-        // $files = $this->getPDFFilesArray('170105.pdf');
-        $file = '/var/www/pdftron/pdf/170105.pdf';
-        $destination = '/var/www/pdftron/pdf/cropped/170105.pdf';
-        var_dump($file);
+        // @TODO: Get input filename.
+        $files = $this->getPDFFilesArray(null);
 
-        $this->PDFCropper->crop($file, $destination);
+        foreach ($files as $inputPath) {
+            // @TODO: Allow for keeping original.
+            // $destination = '/var/www/pdftron/pdf/cropped/170105.pdf';
+            $style->text('Cropping ' . $inputPath);
 
-        // foreach ($files as $PDFFile => $XODFile) {
-        //     $this->PDFToXODConverter->convertPDFToXOD($PDFFile, $XODFile);
-//
-        //     // File sizes before and after.
-        //     $originalSize = $this->PDFFileSystem->fileSize($PDFFile);
-        //     $convertedSize = $this->PDFFileSystem->fileSize($XODFile);
-//
-        //     // Output the results.
-        //     $style->text($PDFFile . ' cropped ' . $XODFile . ', ' . $originalSize . '/' . $convertedSize);
-        // }
+
+            $this->PDFCropper->crop($inputPath, $inputPath);
+        }
     }
 
     /**

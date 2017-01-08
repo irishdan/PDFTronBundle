@@ -63,7 +63,7 @@ class ConvertPDFCommand extends ContainerAwareCommand
     {
         $style = new SymfonyStyle($input, $output);
         // Foreach file get the file name and XOD file path.
-        $files = $this->getPDFFilesArray($input);
+        $files = $this->getPDFtoXODFilesArray($input);
 
         foreach ($files as $PDFFile => $XODFile) {
             $this->PDFToXODConverter->convertPDFToXOD($PDFFile, $XODFile);
@@ -85,6 +85,6 @@ class ConvertPDFCommand extends ContainerAwareCommand
     {
         $filename = $input->getArgument('pdf_name');
 
-        return $this->PDFFileSystem->getPDFFilesArray($filename);
+        return $this->PDFFileSystem->getPDFtoXODFilesArray($filename);
     }
 }
