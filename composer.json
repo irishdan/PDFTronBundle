@@ -16,5 +16,5 @@
         "psr-4": { "Symfony\\Polyfill\\Php56\\": "" },
         "files": [ "PDFNetWrappers/PDFNetC/Lib/PDFNetPHP.php" ]
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "dev"
 }
