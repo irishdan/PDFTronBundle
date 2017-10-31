@@ -13,7 +13,7 @@
         "MIT"
     ],
     "autoload": {
-        "psr-4": { "Symfony\\Polyfill\\Php56\\": "" },
+        "psr-4": { "IrishDan\\PDFTronBundle\\": "" },
         "files": [ "PDFNetWrappers/PDFNetC/Lib/PDFNetPHP.php" ]
     },
     "minimum-stability": "dev"
