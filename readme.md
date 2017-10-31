@@ -4,7 +4,7 @@ using the [PDFNet SDK](http://www.pdftron.com/pdfnet/index.html) and the [PDFTro
 
 ## Installation
  - To run the bash installation script run:
- sudo ./pdftron_install.sh
+ sudo ./install_pdftron.sh
 
 ### Manual Installation
  - sudo apt-get install cmake
