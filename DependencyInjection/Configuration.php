@@ -1,6 +1,6 @@
 <?php
 
-namespace PDFTronBundle\DependencyInjection;
+namespace IrishDan\PDFTronBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;

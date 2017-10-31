@@ -1,11 +1,11 @@
 <?php
 
-namespace PDFTronBundle\Command;
+namespace IrishDan\PDFTronBundle\Command;
 
-use PDFTronBundle\Services\PDFCropper;
-use PDFTronBundle\Services\PDFFileSystem;
-use PDFTronBundle\Services\PDFToXODConverter;
-use PDFTronBundle\Services\PDFTron;
+use IrishDan\PDFTronBundle\Services\PDFCropper;
+use IrishDan\PDFTronBundle\Services\PDFFileSystem;
+use IrishDan\PDFTronBundle\Services\PDFToXODConverter;
+use IrishDan\PDFTronBundle\Services\PDFTron;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

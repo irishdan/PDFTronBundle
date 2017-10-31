@@ -1,6 +1,6 @@
 <?php
 
-namespace PDFTronBundle\Services;
+namespace IrishDan\PDFTronBundle\Services;
 
 
 /**

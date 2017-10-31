@@ -1,6 +1,6 @@
 <?php
 
-namespace PDFTronBundle\DependencyInjection;
+namespace IrishDan\PDFTronBundle\DependencyInjection;
 
 
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
