@@ -24,4 +24,4 @@ using the [PDFNet SDK](http://www.pdftron.com/pdfnet/index.html) and the [PDFTro
  
 ### PHP.ini
  - At this point PDFNetPHP.so has been added to your php extensions directory. 
-   But you need to add it to your php.ini.
+   But you need to add it to your php.ini

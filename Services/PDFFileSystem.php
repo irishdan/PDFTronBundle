@@ -68,14 +68,20 @@ class PDFFileSystem extends Filesystem
         }
     }
 
-    public function getPDFtoXODFileMapping($filename = '')
+    public function getPDFSystemPath($filename)
+    {
+        $this->appendExtensionIfMissing($filename);
+
+        return $this->getPDFDirectory() . $filename;
+    }
+
+    public function getPDFtoXODFileMapping($filename)
     {
         // Get the XOD path.
         $XODPath = $this->getXODPath($filename);
 
         // Get the PDF path
-        $this->appendExtensionIfMissing($filename);
-        $PDFPath = $this->getPDFDirectory() . $filename;
+        $PDFPath = $this->getPDFSystemPath($filename);
 
         return new PDFXODMapping($PDFPath, $XODPath);
     }

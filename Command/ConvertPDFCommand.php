@@ -57,43 +57,25 @@ class ConvertPDFCommand extends ContainerAwareCommand
     {
         $this
             ->setName('pdf_tron:pdf_to_xod')
-            ->addArgument('pdf_name', InputArgument::OPTIONAL)
+            ->addArgument('pdf_name', InputArgument::REQUIRED)
             ->setDescription('Convert a PDF file to XOD format')
             ->setHelp('The command converts an input PDF file into the XOD format.');
     }
 
-    /**
-     * Execute the command
-     *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $style = new SymfonyStyle($input, $output);
-        // Foreach file get the file name and XOD file path.
-        $files = $this->getPDFtoXODFileMapping($input);
 
-        foreach ($files as $PDFFile => $XODFile) {
-            $this->PDFToXODConverter->convertPDFToXOD($PDFFile, $XODFile);
+        $inputFilename = $input->getArgument('pdf_name');
+        $files = $this->PDFFileSystem->getPDFToXODFileMapping($inputFilename);
 
-            // File sizes before and after.
-            $originalSize = $this->PDFFileSystem->fileSize($PDFFile);
-            $convertedSize = $this->PDFFileSystem->fileSize($XODFile);
+        $this->PDFToXODConverter->convertPDFToXOD($files);
 
-            // Output the results.
-            $style->text($PDFFile . ' converted to ' . $XODFile . ', ' . $originalSize . '/' . $convertedSize);
-        }
-    }
+        // File sizes before and after.
+        $originalSize = $this->PDFFileSystem->fileSize($files->PDFPath);
+        $convertedSize = $this->PDFFileSystem->fileSize($files->XODPath);
 
-    /**
-     * @param InputInterface $input
-     * @return array
-     */
-    function getPDFFilesArray(InputInterface $input)
-    {
-        $filename = $input->getArgument('pdf_name');
-
-        return $this->PDFFileSystem->getPDFtoXODFileMapping($filename);
+        // Output the results.
+        $style->text($files->PDFPath . ' converted to ' . $files->XODPath . ', ' . $originalSize . '/' . $convertedSize);
     }
 }

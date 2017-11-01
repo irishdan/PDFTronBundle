@@ -12,7 +12,6 @@ namespace IrishDan\PDFTronBundle\Command;
 
 use IrishDan\PDFTronBundle\Services\PDFCropper;
 use IrishDan\PDFTronBundle\Services\PDFFileSystem;
-use IrishDan\PDFTronBundle\Services\PDFToXODConverter;
 use IrishDan\PDFTronBundle\Services\PDFTron;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -39,12 +38,13 @@ class CropPDFCommand extends ContainerAwareCommand
 
     /**
      * ConvertPDFCommand constructor.
+     *
      * @param PDFCropper $PDFCropper
      * @param PDFFileSystem $PDFFileSystem
      */
     public function __construct(PDFCropper $PDFCropper, PDFFileSystem $PDFFileSystem)
     {
-        $this->PDFCropper =$PDFCropper;
+        $this->PDFCropper = $PDFCropper;
         $this->PDFFileSystem = $PDFFileSystem;
 
         parent::__construct();
@@ -57,42 +57,42 @@ class CropPDFCommand extends ContainerAwareCommand
     {
         $this
             ->setName('pdf_tron:crop')
-            ->addArgument('pdf_name', InputArgument::OPTIONAL)
+            ->addArgument('input_pdf_name', InputArgument::REQUIRED)
+            ->addArgument('output_pdf_name', InputArgument::REQUIRED)
+            ->addArgument('margin', InputArgument::OPTIONAL)
+            ->addArgument('x2', InputArgument::OPTIONAL)
+            ->addArgument('y1', InputArgument::OPTIONAL)
+            ->addArgument('y2', InputArgument::OPTIONAL)
             ->setDescription('Crop all pages in a PDF file')
-            ->setHelp('The command converts an input PDF file into the XOD format.')
-        ;
+            ->setHelp('The command converts an input PDF file into the XOD format.');
     }
 
-    /**
-     * Execute the command
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $style = new SymfonyStyle($input, $output);
-        // Foreach file get the file name and XOD file path.
-        // @TODO: Get input filename.
-        $files = $this->getPDFFilesArray(null);
 
-        foreach ($files as $inputPath) {
-            // @TODO: Allow for keeping original.
-            // $destination = '/var/www/pdftron/pdf/cropped/170105.pdf';
-            $style->text('Cropping ' . $inputPath);
+        // the input and put files are required.
+        $inputFilename = $input->getArgument('input_pdf_name');
+        $outputFilename = $input->getArgument('output_pdf_name');
 
+        // Foreach file system path.
+        $inputFilePath = $this->PDFFileSystem->getPDFSystemPath($inputFilename);
+        $outputFilePath = $this->PDFFileSystem->getPDFSystemPath($outputFilename);
 
-            $this->PDFCropper->crop($inputPath, $inputPath);
+        // Get the cropping margins
+        $margin = empty($input->getArgument('margin')) ? 10 : $input->getArgument('margin');
+        $x2 = empty($input->getArgument('x2')) ? null : $input->getArgument('x2');
+        $y1 = empty($input->getArgument('y1')) ? null : $input->getArgument('y1');
+        $y2 = empty($input->getArgument('y2')) ? null : $input->getArgument('y2');
+
+        $style->text('Cropping ' . $inputFilename);
+
+        try {
+            $this->PDFCropper->crop($inputFilePath, $outputFilePath, $margin, $x2, $y1, $y2);
+
+            $style->text('Cropped pdf saved at ' . $outputFilePath);
+        } catch (\Exception $e) {
+            $style->text('Unable to crop file ' . $inputFilename . ' to ' . $outputFilePath);
         }
-    }
-
-    /**
-     * @param InputInterface $input
-     * @return array
-     */
-    function getPDFFilesArray(InputInterface $input)
-    {
-        $filename = $input->getArgument('pdf_name');
-
-        return $this->PDFFileSystem->getPDFFilesArray($filename);
     }
 }

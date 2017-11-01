@@ -12,6 +12,7 @@ namespace IrishDan\PDFTronBundle\Services;
 
 /**
  * Class PDFCropper
+ *
  * @package PDFTronBundle\Services
  */
 class PDFCropper extends PDFTron
@@ -26,6 +27,7 @@ class PDFCropper extends PDFTron
 
     /**
      * Crops an external padding from every page of the PDF.
+     *
      * @param $inputPDFPath
      * @param null $outputPDFPath
      * @param int $padding
@@ -33,7 +35,7 @@ class PDFCropper extends PDFTron
      * @param null $y1
      * @param null $y2
      */
-    public function crop($inputPDFPath, $outputPDFPath = null, $padding = 1, $x2 = null, $y1 = null, $y2 = null)
+    public function crop($inputPDFPath, $outputPDFPath, $padding = 10, $x2 = null, $y1 = null, $y2 = null)
     {
         $inputDoc = new \PDFDoc($inputPDFPath);
         $inputDoc->InitSecurityHandler();
