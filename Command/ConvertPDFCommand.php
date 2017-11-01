@@ -30,12 +30,13 @@ class ConvertPDFCommand extends ContainerAwareCommand
 
     /**
      * ConvertPDFCommand constructor.
+     *
      * @param PDFToXODConverter $PDFToXODConverter
      * @param PDFFileSystem $PDFFileSystem
      */
     public function __construct(PDFToXODConverter $PDFToXODConverter, PDFFileSystem $PDFFileSystem)
     {
-        $this->PDFToXODConverter =$PDFToXODConverter;
+        $this->PDFToXODConverter = $PDFToXODConverter;
         $this->PDFFileSystem = $PDFFileSystem;
 
         parent::__construct();
@@ -50,12 +51,12 @@ class ConvertPDFCommand extends ContainerAwareCommand
             ->setName('pdf_tron:pdf_to_xod')
             ->addArgument('pdf_name', InputArgument::OPTIONAL)
             ->setDescription('Convert a PDF file to XOD format')
-            ->setHelp('The command converts an input PDF file into the XOD format.')
-        ;
+            ->setHelp('The command converts an input PDF file into the XOD format.');
     }
 
     /**
      * Execute the command
+     *
      * @param InputInterface $input
      * @param OutputInterface $output
      */
@@ -63,7 +64,7 @@ class ConvertPDFCommand extends ContainerAwareCommand
     {
         $style = new SymfonyStyle($input, $output);
         // Foreach file get the file name and XOD file path.
-        $files = $this->getPDFtoXODFilesArray($input);
+        $files = $this->getPDFtoXODFileMapping($input);
 
         foreach ($files as $PDFFile => $XODFile) {
             $this->PDFToXODConverter->convertPDFToXOD($PDFFile, $XODFile);
@@ -85,6 +86,6 @@ class ConvertPDFCommand extends ContainerAwareCommand
     {
         $filename = $input->getArgument('pdf_name');
 
-        return $this->PDFFileSystem->getPDFtoXODFilesArray($filename);
+        return $this->PDFFileSystem->getPDFtoXODFileMapping($filename);
     }
 }

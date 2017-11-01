@@ -1,29 +1,30 @@
 services:
-  pdftron.pdf_to_xod:
-      class: PDFTronBundle\Services\PDFToXODConverter
-      arguments: [ '%pdf_tron.options_sets%' ]
+    pdftron.pdf_to_xod:
+        class: IrishDan\PDFTronBundle\Services\PDFToXODConverter
+        arguments: [ '%pdf_tron.options_sets%' ]
 
-  pdftron.crop:
-      class: PDFTronBundle\Services\PDFCropper
+    pdftron.crop:
+        class: IrishDan\PDFTronBundle\Services\PDFCropper
 
-  pdftron.thumbnail_generator:
-        class: PDFTronBundle\Services\PDFThumbnailGenerator
+    pdftron.thumbnail_generator:
+        class: IrishDan\PDFTronBundle\Services\PDFThumbnailGenerator
 
-  pdftron.joiner:
-      class: PDFTronBundle\Services\PDFJoiner
+    pdftron.joiner:
+        class: IrishDan\PDFTronBundle\Services\PDFJoiner
 
-  pdftron.file_system:
-      class: PDFTronBundle\Services\PDFFileSystem
-      arguments: [ '%kernel.root_dir%', '%pdf_tron.xod_directory%', '%pdf_tron.xod_directory%', '%pdf_tron.image_directory%' ]
+    pdftron.file_system:
+        class: IrishDan\PDFTronBundle\Services\PDFFileSystem
+        arguments: [ '%kernel.root_dir%', '%pdf_tron.pdf_directory%', '%pdf_tron.xod_directory%', '%pdf_tron.image_directory%' ]
+        parents: Symfony\Component\Filesystem\Filesystem
 
-  pdftron.convert_all_command:
-      class: PDFTronBundle\Command\ConvertPDFCommand
-      arguments: [ '@pdftron.pdf_to_xod', '@pdftron.file_system' ]
-      tags:
-          - { name: console.command }
+    pdftron.convert_all_command:
+        class: IrishDan\PDFTronBundle\Command\ConvertPDFCommand
+        arguments: [ '@pdftron.pdf_to_xod', '@pdftron.file_system' ]
+        tags:
+            - { name: console.command }
 
-  pdftron.crop_command:
-      class: PDFTronBundle\Command\CropPDFCommand
-      arguments: [ '@pdftron.crop', '@pdftron.file_system' ]
-      tags:
-          - { name: console.command }
+    pdftron.crop_command:
+        class: IrishDan\PDFTronBundle\Command\CropPDFCommand
+        arguments: [ '@pdftron.crop', '@pdftron.file_system' ]
+        tags:
+            - { name: console.command }

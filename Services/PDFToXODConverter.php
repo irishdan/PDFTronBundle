@@ -2,10 +2,12 @@
 
 namespace IrishDan\PDFTronBundle\Services;
 
+use IrishDan\PDFTronBundle\PDFXODMapping;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
 
 /**
  * Class PDFToXODConverter
+ *
  * @package PDFTronBundle\Services
  */
 class PDFToXODConverter extends PDFTron
@@ -25,22 +27,14 @@ class PDFToXODConverter extends PDFTron
         $this->optionSets = $optionSets;
     }
 
-    /**
-     * Convert a PDF file to a webviewer XOD file.
-     *
-     * @param string $PDFFilePath
-     * @param string $XODFilePath
-     * @param string $optionsSetName
-     */
-    public function convertPDFToXOD($PDFFilePath = '', $XODFilePath = '', $optionsSetName = '')
+    public function convertPDFToXOD(PDFXODMapping $fileMapping, $optionsSetName = '')
     {
-        if (!empty($PDFFilePAth) && file_exists($PDFFilePath)) {
+        if (!empty($fileMapping->PDFPath) && file_exists($fileMapping->PDFPath)) {
             if (!empty($optionsSetName) && !empty($this->optionSets[$optionsSetName])) {
                 $outputOptions = $this->createXODOutputOptions($this->optionSets[$optionsSetName]);
-                \Convert::ToXOD($PDFFilePath, $XODFilePath, $outputOptions);
-            }
-            else {
-                \Convert::ToXOD($PDFFilePath, $XODFilePath);
+                \Convert::ToXOD($fileMapping->PDFPath, $fileMapping->XODPath, $outputOptions);
+            } else {
+                \Convert::ToXOD($fileMapping->PDFPath, $fileMapping->XODPath);
             }
         }
     }
@@ -65,6 +59,7 @@ class PDFToXODConverter extends PDFTron
                 $xodOptions->{$setter}($optionValue);
             }
         }
+
         return $xodOptions;
     }
 }

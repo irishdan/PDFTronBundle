@@ -2,12 +2,14 @@
 
 namespace IrishDan\PDFTronBundle\Services;
 
+use IrishDan\PDFTronBundle\PDFXODMapping;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class PDFFileSystem
  * @package PDFTronBundle\Services
  */
-class PDFFileSystem
+class PDFFileSystem extends Filesystem
 {
     /**
      * @var string
@@ -19,6 +21,8 @@ class PDFFileSystem
      */
     private $XODDirectory;
 
+    private $XODPath;
+
     /**
      * @var string
      */
@@ -26,68 +30,62 @@ class PDFFileSystem
 
     /**
      * PDFFileSystem constructor.
+     *
      * @param $rootDirectory
      * @param $PDFDirectory
      * @param $XODDirectory
      * @param $imageDirectory
      */
-    public function __construct($rootDirectory, $PDFDirectory, $XODDirectory, $imageDirectory)
+    public function __construct($rootDirectory, $PDFDirectory = null, $XODDirectory = null, $imageDirectory = null)
     {
-        $this->PDFDirectory = $rootDirectory . '/../' . $PDFDirectory;
-        $this->XODDirectory  = $rootDirectory . '/../' . $XODDirectory;
-        $this->imageDirectory = $rootDirectory . '/../' . $imageDirectory;
+        if (!empty($PDFDirectory)) {
+            $this->PDFDirectory = $rootDirectory . '/../' . $PDFDirectory;
+        }
+
+        if (!empty($XODDirectory)) {
+            $this->XODPath = $XODDirectory;
+            $this->XODDirectory = $rootDirectory . '/../' . $XODDirectory;
+
+            if (!$this->exists($this->XODDirectory)) {
+                $this->mkdir($this->XODDirectory);
+            }
+        }
+
+        if (!empty($imageDirectory)) {
+            $this->imageDirectory = $rootDirectory . '/../' . $imageDirectory;
+
+            if (!$this->exists($this->imageDirectory)) {
+                $this->mkdir($this->imageDirectory);
+            }
+        }
     }
 
-    /**
-     * Creates an array of pdf file paths.
-     * @param string $filename
-     * @return array
-     */
-    public function getPDFFilesArray($filename = '')
+    public function getPDFtoXODFileMapping($filename = '')
     {
-        $files = [];
-        if (!empty($filename)) {
-            if (!file_exists($filename)) {
-                $filename = $this->getPDFDirectory() . $filename;
-            }
+        // Get the XOD path.
+        $XODPath = $this->getXODPath($filename);
 
-            if (file_exists($filename)) {
-                $files[] = $filename;
-            }
-        }
-        else {
-            $PDFDirectory = $this->getPDFDirectory();
-            $files = array_diff(scandir($PDFDirectory), array('.', '..'));
-        }
+        // Get the PDF path
+        $this->appendExtensionIfMissing($filename);
+        $PDFPath = $this->getPDFDirectory() . $filename;
 
-        return $files;
+        return new PDFXODMapping($PDFPath, $XODPath);
     }
 
-    /**
-     * Creates an array of pdf file paths as keys with xod file paths as values.
-     * @param string $filename
-     * @return array
-     */
-    function getPDFtoXODFilesArray($filename = '')
+    protected function appendExtensionIfMissing(&$filename, $extension = 'pdf')
     {
-        $files = $this->getPDFFilesArray($filename);
-
-        // Out non-pdf files and generate the xod path
-        foreach ($files as $key => $path) {
-            $fileInfo = pathinfo($path);
-            if (!empty($fileInfo['extension'] && strtolower($fileInfo['extension']) == 'pdf')) {
-                $filesMappings[$path] = $this->getXODPath($fileInfo['filename']);
-            }
+        if (!preg_match('/(\.' . $extension . ')$/i', $filename)) {
+            $filename .= '.' . $extension;
         }
-
-        return $filesMappings;
     }
 
     /**
      * @param $filename
+     *
      * @return int
      */
-    public function fileSize($filename) {
+    public function fileSize($filename)
+    {
         $bytes = filesize($filename);
         return $bytes;
     }
@@ -95,9 +93,10 @@ class PDFFileSystem
     /**
      * @param $size
      * @param int $precision
+     *
      * @return string
      */
-    function formatBytes($size, $precision = 2)
+    protected function formatBytes($size, $precision = 2)
     {
         $base = log($size, 1024);
         $suffixes = array('', 'K', 'M', 'G', 'T');
@@ -118,7 +117,7 @@ class PDFFileSystem
      */
     public function getXODDirectory()
     {
-        return $this->XODDirectory  . '/';
+        return $this->XODDirectory . '/';
     }
 
     /**
@@ -126,7 +125,7 @@ class PDFFileSystem
      */
     public function getImageDirectory()
     {
-        return $this->imageDirectory  . '/';
+        return $this->imageDirectory . '/';
     }
 
     /**
@@ -136,5 +135,20 @@ class PDFFileSystem
     public function getXODPath($path)
     {
         return $this->getXODDirectory() . $path . '.xod';
+    }
+
+    public function getXODWebPath($path)
+    {
+        // $this->XODPath remove the web from the start of the string.
+        $patterns = array();
+        $patterns[0] = '/^(web\/)/i';
+        $patterns[1] = '/^(\/web\/)/i';
+        $replacements = array();
+        $replacements[] = '/';
+        $replacements[] = '/';
+
+        $webPath = preg_replace($patterns, $replacements, $this->XODPath);
+
+        return $webPath . '/' . $path . '.xod';
     }
 }

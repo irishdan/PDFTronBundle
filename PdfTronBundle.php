@@ -1,6 +1,6 @@
 <?php
 
-namespace PDFTronBundle;
+namespace IrishDan\PDFTronBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

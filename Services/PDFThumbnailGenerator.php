@@ -35,6 +35,7 @@ class PDFThumbnailGenerator extends PDFTron
     {
         $draw = new \PDFDraw();
         $draw->SetDPI($dpi);
+
         $doc = new \PDFDoc($PDFFilePath);
         $doc->InitSecurityHandler();
         $pg = $doc->GetPage($page);

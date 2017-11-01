@@ -22,10 +22,11 @@ class PDFJoiner extends PDFTron
      * @param array $PDFPaths
      * @param null $outputDestination
      */
-    public function joinPDFs(array $PDFPaths, $outputDestination = null) {
+    public function joinPDFs(array $PDFPaths, $outputDestination = null)
+    {
         foreach ($PDFPaths as $key => $PDFPath) {
             if ($key > 0) {
-                $this->joinTwoPDFs($PDFPaths[$key -1], $PDFPath, $outputDestination);
+                $this->joinTwoPDFs($PDFPaths[$key - 1], $PDFPath, $outputDestination);
             }
         }
     }
@@ -48,8 +49,7 @@ class PDFJoiner extends PDFTron
 
         if (!empty($outputDestination)) {
             $firstPDF->Save($outputDestination, \SDFDoc::e_remove_unused);
-        }
-        else {
+        } else {
             $firstPDF->Save($firstPDFPath, \SDFDoc::e_remove_unused);
         }
 
